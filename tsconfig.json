@@ -1,0 +1,26 @@
+{
+    "compilerOptions": {
+        "target": "ES2017",
+        "module": "commonjs",
+        "lib": [
+            "es2017",
+            "dom",
+            "dom.iterable"
+        ],
+        "jsx": "react",
+        "jsxFactory": "Lime.createElement",
+        "strict": true,
+        "noImplicitAny": true,
+        "strictNullChecks": true,
+        "strictFunctionTypes": true,
+        "strictPropertyInitialization": false,
+        "noImplicitThis": true,
+        "noImplicitReturns": true,
+        "baseUrl": "./",
+        "paths": {
+            "@src/*": ["./src/*"],
+        },
+        "esModuleInterop": true,
+        "forceConsistentCasingInFileNames": true
+    }
+}

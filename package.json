@@ -1,0 +1,30 @@
+{
+  "name": "lime",
+  "version": "1.0.0",
+  "description": "A simple typescript library for creating scalable frontend applications.",
+  "scripts": {
+    "serve": "vite",
+    "build": "vite build"
+  },
+  "contributors": [
+    {
+      "name": "David Adamson",
+      "email": "david.adamson2304@gmail.com",
+      "url": "https://github.com/adamsondavid"
+    },
+    {
+      "name": "Yanik Adamson",
+      "email": "yadamsond@gmail.com",
+      "url": "https://github.com/adamsonyanik"
+    }
+  ],
+  "license": "MIT",
+  "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^5.10.2",
+    "@typescript-eslint/parser": "^5.10.2",
+    "eslint": "^8.8.0",
+    "typescript": "^4.5.5",
+    "vite": "^2.6.13",
+    "vite-plugin-checker": "^0.4.2"
+  }
+}
