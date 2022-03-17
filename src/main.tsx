@@ -1,95 +1,80 @@
-namespace Lime {
-  export function createElement(component: any, props: any, ...children: Array<Component | string>): Component {
-    const wrapper = new component();
-    wrapper.props = props;
-    return wrapper;
-  }
-}
-
-declare namespace JSX {
-  export interface Element extends Component { }
-  interface ElementAttributesProperty {
+namespace JSX {
+  export interface Element extends Lime.Node { }
+  export interface ElementAttributesProperty {
     props: any;
   }
-}
-
-abstract class Component {
-  protected root: HTMLElement | null;
-  public props: any;
-
-  public abstract toHtml(): HTMLElement;
-
-  public update(): HTMLElement {
-    const html = this.toHtml();
-    if (this.root) this.root.replaceWith(html);
-    this.root = html;
-    return html;
+  export interface ElementChildrenAttribute{
+    slots: any;
   }
-
-  public mount(el: string): void {
-    this.root = document.querySelector(el);
-    this.update();
+  export interface IntrinsicElements {
+    div: Lime.div
   }
 }
 
-abstract class HTMLComponent extends Component {
-  private tag: string;
+namespace Lime {
+  export function createElement(
+      component: (new () => Lime.Node) | string,
+      props: any,
+      ...content: Array<any>
+  ): Lime.Node {
+    let instance: Lime.Node;
+    if (typeof component === "string") {
+      instance = new Lime.HtmlNode(component);
+    } else {
+      instance = new component();
+    }
+    instance.props = props ?? { };
+    instance.props.content = content;
+    return instance;
+  }
 
-  protected constructor(tag: string) {
-    super();
-    this.tag = tag;
+  export abstract class Node {
+    public props: { };
+  }
+
+  export class HtmlNode extends Node {
+    private tag: string;
+    public constructor(tag: string) {
+      super();
+      this.tag = tag;
+    }
+  }
+
+  export interface HtmlTag {
+    content: JSX.Element | string | Array<JSX.Element | string>;
+    className?: string | (() => string);
+  }
+
+  export interface div extends HtmlTag { }
+
+  export abstract class Component extends Lime.Node {
+    public abstract render(): Lime.Node;
   }
 }
 
-abstract class HTMLComponentWithContent extends HTMLComponent {
-  content: Array<Component | string>;
-
-  public toHtml(): HTMLElement {
-    const parent = document.createElement('div');
-    this.content.forEach((c) => {
-      if (c instanceof Component) parent.appendChild(c.toHtml());
-      else parent.appendChild(document.createTextNode(c));
-    });
-    return parent;
-  }
-}
-
-class Div extends HTMLComponentWithContent {
-  public constructor() {
-    super("div");
-  }
-}
-
-abstract class CustomComponent extends Component {
-  public abstract render(): Component;
-
-  public toHtml(): HTMLElement {
-    return this.render().toHtml();
-  }
-}
-
-class App extends CustomComponent {
-  public render(): Component {
-    return new Test();
-  }
-}
-
-class Greeting extends CustomComponent {
+class Greeting extends Lime.Component {
   public props: {
-    name: string;
+    salutation: string;
+    slots: {
+      a: JSX.Element
+    };
   };
 
-  public render(): Component {
-    const d = new Div();
-    d.content = ['Hello', ' ', this.props.name, '!'];
-    return d;
+  public render() {
+    return <div>{this.props.salutation} {this.props.slots.a}</div>;
   }
 }
 
-class Test extends CustomComponent {
-  public render(): Component {
-    return <Greeting name="World"/>;
+class App extends Lime.Component {
+  private className = "centered";
+
+  public render() {
+    return (
+      <div className={this.className}>
+        <Greeting salutation="Hello"><div>!</div></Greeting>
+      </div>
+    );
   }
 }
 
-new App().mount('#app');
+console.log(new App());
